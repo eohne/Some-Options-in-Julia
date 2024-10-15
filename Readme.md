@@ -42,7 +42,7 @@ $V = e^{-rT} \mathbb{E}[\max(S(T) - K, 0)]$
 
 For the barrier option, it becomes:
 
-$V_{barrier} = e^{-rT} \mathbb{E}[\max(S(T) - K, 0) \cdot \mathbf{1}_{\max_{0 \leq t \leq T} S(t) < B}]$
+$V_{barrier} = e^{-rT} E[\max(S(T) - K, 0) \cdot I_{\max_{0 \leq t \leq T} S(t) < B}]$  
 
 where $B$ is the barrier level.
 
@@ -128,9 +128,9 @@ finite_difference_american_option(;
 
 The Heston-Hull-White model extends the Black-Scholes model by incorporating stochastic volatility and stochastic interest rates:
 
-$dS(t) = (r(t) - q)S(t)dt + \sqrt{v(t)}S(t)dW_1(t)$
-$dv(t) = \kappa_v(\theta_v - v(t))dt + \sigma_v\sqrt{v(t)}dW_2(t)$
-$dr(t) = \kappa_r(\theta_r - r(t))dt + \sigma_rdW_3(t)$
+$dS(t) = (r(t) - q)S(t)dt + \sqrt{v(t)}S(t)dW_1(t)$  
+$dv(t) = \kappa_v(\theta_v - v(t))dt + \sigma_v\sqrt{v(t)}dW_2(t)$  
+$dr(t) = \kappa_r(\theta_r - r(t))dt + \sigma_rdW_3(t)$  
 
 where $W_1$, $W_2$, and $W_3$ are correlated Brownian motions.
 
