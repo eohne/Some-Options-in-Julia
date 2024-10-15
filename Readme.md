@@ -20,15 +20,15 @@ $dS(t) = (r - q)S(t)dt + \sigma S(t)dW(t)$
 where $r$ is the risk-free rate, $q$ is the dividend yield, $\sigma$ is the volatility, and $W(t)$ is a standard Brownian motion.
 
 ```julia
-black_scholes_option(;
-    S0::Float64,
-    K::Float64,
-    T::Float64,
-    r::Float64,
-    q::Float64,
-    σ::Float64,
-    option_type::Symbol,
-    M::Int = 100000
+function black_scholes_option(;
+    S0::Float64,        # Initial stock price
+    K::Float64,         # Strike price
+    T::Float64,         # Time to maturity in years
+    r::Float64,         # Risk-free interest rate
+    q::Float64,         # Dividend yield
+    σ::Float64,         # Volatility
+    option_type::Symbol,# Type of option (:call or :put)
+    M::Int = 100000     # Number of Monte Carlo simulations
 )::Tuple{Float64, Float64}
 ```
 
@@ -47,17 +47,17 @@ $V_{barrier} = e^{-rT} E[\max(S(T) - K, 0) \cdot I_{\max_{0 \leq t \leq T} S(t) 
 where $B$ is the barrier level.
 
 ```julia
-monte_carlo_european_barrier_option(;
-    r::Float64,
-    q::Float64,
-    sigma::Float64,
-    S0::Float64,
-    K::Float64,
-    T::Float64,
-    B::Float64,
-    M::Int,
-    dt::Float64 = 1/252,
-    use_cuda::Bool = false
+function monte_carlo_european_barrier_option(;
+    r::Float64,         # Risk-free interest rate
+    q::Float64,         # Dividend yield
+    sigma::Float64,     # Volatility
+    S0::Float64,        # Initial stock price
+    K::Float64,         # Strike price
+    T::Float64,         # Time to maturity in years
+    B::Float64,         # Barrier price
+    M::Int,             # Number of Monte Carlo simulations
+    dt::Float64 = 1/252,# Time step size
+    use_cuda::Bool = false # Whether to use CUDA GPU implementation
 )::Tuple{Float64, Float64}
 ```
 
@@ -68,16 +68,16 @@ monte_carlo_european_barrier_option(;
 The LSM method uses regression to estimate the continuation value of the option at each time step, allowing for optimal early exercise decisions.
 
 ```julia
-monte_carlo_option_american_cpu(;
-    r::Float64,
-    q::Float64,
-    sigma::Float64,
-    S0::Float64,
-    K::Float64,
-    T::Float64,
-    M::Int,
-    option_type::Symbol,
-    dt::Float64 = 1/252
+function monte_carlo_option_american_cpu(;
+    r::Float64,         # Risk-free interest rate
+    q::Float64,         # Dividend yield
+    sigma::Float64,     # Volatility
+    S0::Float64,        # Initial stock price
+    K::Float64,         # Strike price
+    T::Float64,         # Time to maturity in years
+    M::Int,             # Number of Monte Carlo simulations
+    option_type::Symbol,# Type of option (:call or :put)
+    dt::Float64 = 1/252 # Time step size
 )::Float64
 ```
 
@@ -87,16 +87,16 @@ monte_carlo_option_american_cpu(;
 The binomial tree model discretizes both time and possible stock price movements, creating a tree of potential future stock prices and working backwards to determine the option price.
 
 ```julia
-binomial_tree_american_option(;
-    r::Float64,
-    q::Float64,
-    sigma::Float64,
-    S0::Float64,
-    K::Float64,
-    T::Float64,
-    M::Int,
-    option_type::Symbol,
-    dt::Float64 = 1/252
+function binomial_tree_american_option(;
+    r::Float64,         # Risk-free interest rate
+    q::Float64,         # Dividend yield
+    sigma::Float64,     # Volatility
+    S0::Float64,        # Initial stock price
+    K::Float64,         # Strike price
+    T::Float64,         # Time to maturity in years
+    M::Int,             # Number of time steps in the tree
+    option_type::Symbol,# Type of option (:call or :put)
+    dt::Float64 = 1/252 # Time step size
 )::Float64
 ```
 
@@ -109,16 +109,16 @@ The finite difference method solves the Black-Scholes partial differential equat
 $\frac{\partial V}{\partial t} + \frac{1}{2}\sigma^2S^2\frac{\partial^2 V}{\partial S^2} + (r-q)S\frac{\partial V}{\partial S} - rV = 0$
 
 ```julia
-finite_difference_american_option(;
-    r::Float64,
-    q::Float64,
-    sigma::Float64,
-    S0::Float64,
-    K::Float64,
-    T::Float64,
-    M::Int,
-    option_type::Symbol,
-    dt::Float64 = 1/252
+function finite_difference_american_option(;
+    r::Float64,         # Risk-free interest rate
+    q::Float64,         # Dividend yield
+    sigma::Float64,     # Volatility
+    S0::Float64,        # Initial stock price
+    K::Float64,         # Strike price
+    T::Float64,         # Time to maturity in years
+    M::Int,             # Number of spatial steps
+    option_type::Symbol,# Type of option (:call or :put)
+    dt::Float64 = 1/252 # Time step size
 )::Float64
 ```
 
@@ -135,25 +135,25 @@ $dr(t) = \kappa_r(\theta_r - r(t))dt + \sigma_rdW_3(t)$
 where $W_1$, $W_2$, and $W_3$ are correlated Brownian motions.
 
 ```julia
-heston_hull_white_option(;
-    S0::Float64,
-    v0::Float64,
-    r0::Float64,
-    K::Float64,
-    T::Float64,
-    q::Float64,
-    κ_v::Float64,
-    θ_v::Float64,
-    σ_v::Float64,
-    κ_r::Float64,
-    θ_r::Float64,
-    σ_r::Float64,
-    ρ_sv::Float64,
-    ρ_sr::Float64,
-    ρ_vr::Float64,
-    option_type::Symbol,
-    M::Int,
-    dt::Float64 = 1/252
+function heston_hull_white_option(;
+    S0::Float64,        # Initial stock price
+    v0::Float64,        # Initial variance
+    r0::Float64,        # Initial interest rate
+    K::Float64,         # Strike price
+    T::Float64,         # Time to maturity in years
+    q::Float64,         # Dividend yield
+    κ_v::Float64,       # Mean reversion speed of variance
+    θ_v::Float64,       # Long-term mean of variance
+    σ_v::Float64,       # Volatility of variance
+    κ_r::Float64,       # Mean reversion speed of interest rate
+    θ_r::Float64,       # Long-term mean of interest rate
+    σ_r::Float64,       # Volatility of interest rate
+    ρ_sv::Float64,      # Correlation between stock price and variance
+    ρ_sr::Float64,      # Correlation between stock price and interest rate
+    ρ_vr::Float64,      # Correlation between variance and interest rate
+    option_type::Symbol,# Type of option (:call or :put)
+    M::Int,             # Number of Monte Carlo simulations
+    dt::Float64 = 1/252 # Time step size
 )::Tuple{Float64, Float64}
 ```
 
@@ -164,25 +164,25 @@ heston_hull_white_option(;
 This implementation combines the Heston-Hull-White model with the LSM method for pricing American options, allowing for early exercise in a complex stochastic environment.
 
 ```julia
-heston_hull_white_american_option(;
-    S0::Float64,
-    v0::Float64,
-    r0::Float64,
-    K::Float64,
-    T::Float64,
-    q::Float64,
-    κ_v::Float64,
-    θ_v::Float64,
-    σ_v::Float64,
-    κ_r::Float64,
-    θ_r::Float64,
-    σ_r::Float64,
-    ρ_sv::Float64,
-    ρ_sr::Float64,
-    ρ_vr::Float64,
-    option_type::Symbol,
-    M::Int,
-    dt::Float64 = 1/252
+function heston_hull_white_american_option(;
+    S0::Float64,        # Initial stock price
+    v0::Float64,        # Initial variance
+    r0::Float64,        # Initial interest rate
+    K::Float64,         # Strike price
+    T::Float64,         # Time to maturity in years
+    q::Float64,         # Dividend yield
+    κ_v::Float64,       # Mean reversion speed of variance
+    θ_v::Float64,       # Long-term mean of variance
+    σ_v::Float64,       # Volatility of variance
+    κ_r::Float64,       # Mean reversion speed of interest rate
+    θ_r::Float64,       # Long-term mean of interest rate
+    σ_r::Float64,       # Volatility of interest rate
+    ρ_sv::Float64,      # Correlation between stock price and variance
+    ρ_sr::Float64,      # Correlation between stock price and interest rate
+    ρ_vr::Float64,      # Correlation between variance and interest rate
+    option_type::Symbol,# Type of option (:call or :put)
+    M::Int,             # Number of Monte Carlo simulations
+    dt::Float64 = 1/252 # Time step size
 )::Tuple{Float64, Float64}
 ```
 
